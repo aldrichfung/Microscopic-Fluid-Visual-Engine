@@ -21,6 +21,14 @@ export class MicroscopicEngine {
     });
   }
 
+  public get simulationTimeSeconds(): number {
+    return this.scheduler.simulationTimeSeconds;
+  }
+
+  public get currentStepIndex(): number {
+    return this.scheduler.currentStepIndex;
+  }
+
   public async initialize(): Promise<void> {
     await this.backend.initialize(this.project);
   }

@@ -4,8 +4,9 @@ import { resolve } from "node:path";
 import { createDefaultProject, parseProject, serializeProject } from "./core/project.js";
 import {
   estimateFieldMemoryBytes,
-  PHASE_ONE_FIELDS,
+  PHASE_TWO_FIELDS,
   PHASE_ONE_GRAPH,
+  PHASE_TWO_GRAPH,
   worldExtentForOutput,
 } from "./core/fields.js";
 import { compileRenderGraph } from "./core/render-graph.js";
@@ -32,9 +33,11 @@ try {
     case "plan": {
       if (!argument) throw new Error("Usage: mfve plan <project.json>");
       const project = parseProject(readFileSync(resolve(argument), "utf8"));
-      const resources = new Set(PHASE_ONE_FIELDS.map((field) => field.name));
-      const graph = compileRenderGraph(resources, PHASE_ONE_GRAPH);
-      const memory = estimateFieldMemoryBytes(project.grid) / (1024 * 1024);
+      const signatureSystems = project.layers.some((layer) => layer.kind !== "transport");
+      const graphDefinition = signatureSystems ? PHASE_TWO_GRAPH : PHASE_ONE_GRAPH;
+      const resources = new Set(PHASE_TWO_FIELDS.map((field) => field.name));
+      const graph = compileRenderGraph(resources, graphDefinition);
+      const memory = estimateFieldMemoryBytes(project.grid, PHASE_TWO_FIELDS) / (1024 * 1024);
       const extent = worldExtentForOutput(project.output.width, project.output.height);
       console.log(`Execution plan for ${project.name}`);
       console.log(graph.passes.map((pass, index) => `${index + 1}. ${pass.name}`).join("\n"));

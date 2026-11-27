@@ -3,7 +3,7 @@ export type FieldFormat = "rgba16float" | "r32float";
 export interface FieldDescriptor {
   readonly name: string;
   readonly format: FieldFormat;
-  readonly role: "velocity" | "dye" | "pressure" | "divergence" | "height" | "optics";
+  readonly role: "velocity" | "dye" | "pressure" | "divergence" | "height" | "phase" | "droplets" | "optics";
 }
 
 export interface GridSize {
@@ -21,6 +21,13 @@ export const PHASE_ONE_FIELDS: readonly FieldDescriptor[] = [
   { name: "divergence", format: "r32float", role: "divergence" },
   { name: "height", format: "r32float", role: "height" },
   { name: "optical-target", format: "rgba16float", role: "optics" },
+];
+
+export const PHASE_TWO_FIELDS: readonly FieldDescriptor[] = [
+  ...PHASE_ONE_FIELDS,
+  { name: "phase-a", format: "r32float", role: "phase" },
+  { name: "phase-b", format: "r32float", role: "phase" },
+  { name: "droplet-field", format: "rgba16float", role: "droplets" },
 ];
 
 export function bytesPerTexel(format: FieldFormat): number {
@@ -51,4 +58,22 @@ export const PHASE_ONE_GRAPH = [
   { name: "pressure", reads: ["pressure-a", "divergence"], writes: ["pressure-b"], after: ["divergence"] },
   { name: "project", reads: ["velocity-a", "pressure-b"], writes: ["velocity-b"], after: ["pressure"] },
   { name: "optics", reads: ["dye-a", "velocity-b", "height"], writes: ["optical-target"], after: ["project"] },
+] as const;
+
+/** Full signature-system graph; the backend skips passes for disabled layer kinds. */
+export const PHASE_TWO_GRAPH = [
+  { name: "inject", reads: ["dye-a", "velocity-a"], writes: ["dye-b", "velocity-b"] },
+  { name: "advect-velocity", reads: ["velocity-b"], writes: ["velocity-a"], after: ["inject"] },
+  { name: "advect-dye", reads: ["dye-b", "velocity-a"], writes: ["dye-a"], after: ["advect-velocity"] },
+  { name: "divergence", reads: ["velocity-a"], writes: ["divergence"], after: ["advect-dye"] },
+  { name: "pressure", reads: ["pressure-a", "divergence"], writes: ["pressure-b"], after: ["divergence"] },
+  { name: "project", reads: ["velocity-a", "pressure-b"], writes: ["velocity-b"], after: ["pressure"] },
+  { name: "magnetic-step", reads: ["phase-a"], writes: ["phase-b"], after: ["project"] },
+  { name: "droplet-optics", reads: [], writes: ["droplet-field"], after: ["magnetic-step"] },
+  {
+    name: "optics",
+    reads: ["dye-a", "velocity-b", "height", "phase-b", "droplet-field"],
+    writes: ["optical-target"],
+    after: ["droplet-optics"],
+  },
 ] as const;

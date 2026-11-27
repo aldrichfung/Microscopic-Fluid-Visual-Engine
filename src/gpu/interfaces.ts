@@ -16,6 +16,9 @@ export interface ShaderLibrary {
   readonly divergence: string;
   readonly pressure: string;
   readonly project: string;
+  readonly magneticInit: string;
+  readonly magneticStep: string;
+  readonly droplets: string;
   readonly optics: string;
 }
 
@@ -26,9 +29,16 @@ export async function loadShaderLibrary(baseUrl: URL): Promise<ShaderLibrary> {
     return response.text();
   };
 
-  const [inject, advect, divergence, pressure, project, optics] = await Promise.all([
+  const [
+    inject, advect, divergence, pressure, project,
+    magneticInit, magneticStep, droplets, optics,
+  ] = await Promise.all([
     load("inject"), load("advect"), load("divergence"),
-    load("pressure"), load("project"), load("optics"),
+    load("pressure"), load("project"), load("magnetic-init"),
+    load("magnetic-step"), load("droplets"), load("optics"),
   ]);
-  return { inject, advect, divergence, pressure, project, optics };
+  return {
+    inject, advect, divergence, pressure, project,
+    magneticInit, magneticStep, droplets, optics,
+  };
 }

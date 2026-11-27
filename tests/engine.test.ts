@@ -27,8 +27,12 @@ describe("MicroscopicEngine", () => {
     await engine.initialize();
 
     expect(engine.advance(0.25)).toBe(2);
+    expect(engine.simulationTimeSeconds).toBeCloseTo(0.2);
+    expect(engine.currentStepIndex).toBe(2);
     engine.step();
+    expect(engine.simulationTimeSeconds).toBeCloseTo(0.3);
     engine.reset();
+    expect(engine.simulationTimeSeconds).toBe(0);
     engine.destroy();
 
     expect(steps).toEqual([0, 1, 2]);

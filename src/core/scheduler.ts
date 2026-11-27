@@ -26,6 +26,14 @@ export class SimulationScheduler {
     this.clock = new FixedStepClock(fixedDeltaSeconds, maxSubsteps);
   }
 
+  public get simulationTimeSeconds(): number {
+    return this.clock.simulationTimeSeconds;
+  }
+
+  public get currentStepIndex(): number {
+    return this.clock.currentStepIndex;
+  }
+
   public register(pass: SimulationPass): void {
     if (this.passes.some((candidate) => candidate.name === pass.name)) {
       throw new Error(`Duplicate simulation pass: ${pass.name}`);

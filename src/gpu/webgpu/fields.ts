@@ -1,4 +1,4 @@
-import { PHASE_ONE_FIELDS, type FieldDescriptor, type GridSize } from "../../core/fields.js";
+import { PHASE_TWO_FIELDS, type FieldDescriptor, type GridSize } from "../../core/fields.js";
 
 export interface GpuField {
   readonly descriptor: FieldDescriptor;
@@ -56,7 +56,7 @@ export class WebGpuFieldSet {
 
   private allocate(grid: GridSize): void {
     this.grid = grid;
-    for (const descriptor of PHASE_ONE_FIELDS) {
+    for (const descriptor of PHASE_TWO_FIELDS) {
       const texture = this.device.createTexture({
         label: `mfve:${descriptor.name}`,
         size: { width: grid.width, height: grid.height },
