@@ -1,0 +1,41 @@
+{
+  "name": "@mfve/engine",
+  "version": "0.1.0",
+  "private": true,
+  "description": "GPU-first microscopic fluid visual engine foundation",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./shaders/*": "./dist/shaders/*"
+  },
+  "bin": {
+    "mfve": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/copy-assets.mjs",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "cli": "tsx src/cli.ts"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.10",
+    "@webgpu/types": "^0.1.60",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8",
+    "wgsl_reflect": "^1.6.0"
+  },
+  "license": "Apache-2.0"
+}

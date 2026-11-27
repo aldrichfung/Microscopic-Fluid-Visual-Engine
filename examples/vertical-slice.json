@@ -1,0 +1,41 @@
+{
+  "format": "mfve.project",
+  "version": 1,
+  "name": "Ember transport vertical slice",
+  "seed": 1835365234,
+  "grid": { "width": 512, "height": 512 },
+  "output": { "width": 1920, "height": 1080, "framesPerSecond": 60 },
+  "simulation": {
+    "fixedDeltaSeconds": 0.016666666666666666,
+    "maxSubsteps": 4,
+    "durationSeconds": 12
+  },
+  "layers": [
+    {
+      "id": "primary-transport",
+      "kind": "transport",
+      "enabled": true,
+      "pressureIterations": 24,
+      "velocityDissipation": 0.015,
+      "dyeDissipation": 0.002,
+      "sources": [
+        {
+          "id": "central-injection",
+          "position": [0.5, 0.5],
+          "radius": 0.12,
+          "color": [1.0, 0.19, 0.025, 1.0],
+          "impulse": [0.12, -0.04],
+          "strength": 0.8,
+          "startSeconds": 0,
+          "durationSeconds": 1.5
+        }
+      ]
+    }
+  ],
+  "optics": {
+    "absorption": [0.65, 1.4, 2.1],
+    "exposure": 1.2,
+    "specularStrength": 0.35,
+    "darkFieldStrength": 0.8
+  }
+}
